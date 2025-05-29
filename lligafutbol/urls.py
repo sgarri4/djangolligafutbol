@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from futbol import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('menu_lligas/', views.menu_lligas, name='menu_lligas'),
+    path('classificacio/<int:lliga_id>/', views.classificacio, name='classificacio'),
 ]

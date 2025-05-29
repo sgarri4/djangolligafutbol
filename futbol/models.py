@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-
 class Lliga(models.Model):
     nom = models.CharField(max_length=100)
     temporada = models.CharField(max_length=20)
@@ -16,7 +15,7 @@ class Equip(models.Model):
     ciutat = models.CharField(max_length=100)
     fundacio = models.IntegerField(null=True)
     escut = models.ImageField(upload_to='escuts/', null=True, blank=True)
-    lliga = models.ManyToManyField(Lliga, related_name='equips')
+    lliga = models.ForeignKey(Lliga, on_delete=models.CASCADE, related_name='equips')  # Corregido Lliga
     
     def __str__(self):
         return self.nom
@@ -27,7 +26,9 @@ class Jugador(models.Model):
     data_naixement = models.DateField()
     nacionalitat = models.CharField(max_length=50)
     dorsal = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(99)]
+        validators=[MinValueValidator(1), MaxValueValidator(99)],
+        null=True,
+        blank=True
     )
     posicio = models.CharField(max_length=50)
     equip = models.ForeignKey(Equip, on_delete=models.CASCADE, related_name='jugadors')
@@ -41,24 +42,20 @@ class Partit(models.Model):
     local = models.ForeignKey(Equip, on_delete=models.CASCADE, related_name='partits_local')
     visitant = models.ForeignKey(Equip, on_delete=models.CASCADE, related_name='partits_visitant')
     data = models.DateTimeField()
-    #gols_local = models.IntegerField(default=0)
-    #gols_visitant = models.IntegerField(default=0)
     finalitzat = models.BooleanField(default=False)
+    
     class Meta:
         ordering = ['data']
         verbose_name_plural = 'partits'
+    
     def __str__(self):
         return f"{self.local} - {self.visitant} ({self.data})"
+    
     def gols_local(self):
-        gols = self.events.filter(
-                        tipus="GOL",
-                        equip=self.local).count()
-        return gols
+        return self.events.filter(tipus="GOL", equip=self.local).count()
+    
     def gols_visitant(self):
-        gols = self.events.filter(
-                        tipus="GOL",
-                        equip=self.visitant).count()
-        return gols
+        return self.events.filter(tipus="GOL", equip=self.visitant).count()
 
 class Event(models.Model):
     TIPUS_EVENT = [

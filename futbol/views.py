@@ -16,7 +16,7 @@ def classificacio_menu(request):
     #queryset = Lliga.objects.all()
     #form = MenuForm()
     #return render(request,"classificacio_menu.html",
-    #		{"lligues":queryset,"form":form})
+    #       {"lligues":queryset,"form":form})
 
     # si hi ha dades, les processem
     if request.method == "POST":
@@ -86,3 +86,6 @@ def crea_equip(request):
         "form":form,
         })
 
+def menu_lligas(request):
+    ligas = Lliga.objects.all()
+    return render(request, "menu_lligas.html", {"ligas": ligas})

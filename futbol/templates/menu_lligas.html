@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Selecciona una liga</title>
+</head>
+<body>
+    <h1>Selecciona una liga para ver la clasificación</h1>
+    <form action="{% url 'classificacio' 0 %}" method="get" id="ligaForm">
+        <label for="ligaSelect">Liga:</label>
+        <select id="ligaSelect" name="lliga_id" onchange="if(this.value) window.location.href=this.value;">
+            <option value="">-- Selecciona una liga --</option>
+            {% for liga in ligas %}
+                <option value="{% url 'classificacio' liga.id %}">{{ liga.nom }} ({{ liga.temporada }})</option>
+            {% endfor %}
+        </select>
+    </form>
+</body>
+</html>
